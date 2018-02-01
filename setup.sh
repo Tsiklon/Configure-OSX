@@ -26,11 +26,18 @@ odie() {
   exit 1
 }
 
+## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
 ssh_key_pub_loc="/Users/$(LOGNAME)/.ssh/id_rsa.pub"
+command_line_tools=$(softwareupdate -l |
+  grep "\*.*Command Line" |
+  head -n 1 | awk -F"*" '{print $2}' |
+  sed -e 's/^ *//' |
+  tr -d '\n')
+
 
 if [[ -x "/usr/bin/ssh-keygen" ]]
-  if [[ ls -l "$ssh_key_loc" >/dev/null 2>/dev/null -eq 1 ]]
+  if [[ ls -l "$ssh_key_loc" >/dev/null 2>&1 -eq 1 ]]
   then
     echo "Generating New SSH Key - You will be prompted for a password"
     /usr/bin/ssh-keygen -t rsa -N
@@ -48,9 +55,13 @@ EOS
 fi
 
 if [[ -x "/usr/bin/xcode-select" ]]
+##then 
+##   echo "Installing xcode command line tools - expect a GUI prompt"
+##  /usr/bin/xcode-select --install
 then 
-   echo "Installing xcode command line tools - expect a GUI prompt"
-  /usr/bin/xcode-select --install
+  echo "Installing Xcode Command Line Tools - via software update"
+  touch "/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
+  /usr/sbin/softwareupdate -i "$command_line_tools" -v
 else 
   odie <<EOS
 Install xcode + confirm xcode-select is present in /usr/bin/
@@ -82,7 +93,24 @@ else
 Unable to successfully ping 'raw.githubusercontent.com' to pull down the brew install script
 EOS
 
-if [[ -x "/usr/local/bin/ansible" && -x "/usr/local/bin/ansible-playbook" ]]
-then 
-  echo "installing useful packages from brew"
-ansible-playbook -i hosts  
+echo "Starting SSH to run Ansible"
+sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+echo "installing useful packages from brew"
+/usr/local/bin/ansible-playbook -i hosts packages.yml
+echo "Pulling Dotfiles from git"
+/usr/local/bin/ansible-playbook -i hosts dotfiles.yml
+sudo launchctl unload -w /System/Library/LaunchDaemons/ssh.plist
+
+echo "Adjusting NSGlobalDomain Settings"
+/usr/bin/defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
+
+echo "Adjusting Finder settings"
+/usr/bin/defaults write com.apple.finder AppleShowAllFiles = YES
+/usr/bin/defaults write com.apple.finder ShowStatusBar -bool true
+/usr/bin/defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+/usr/bin/defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+/usr/bin/defaults write com.apple.finder CreateDesktop -bool false
+/usr/bin/defaults write com.apple.finder DisableAllAnimations -bool true
+
+echo "Restarting Finder"
+killall "Finder" >/dev/null 2>&1
