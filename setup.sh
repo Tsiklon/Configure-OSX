@@ -36,29 +36,22 @@ command_line_tools=$(softwareupdate -l |
   tr -d '\n')
 
 
-if [[ -x "/usr/bin/ssh-keygen" ]]
-  if [[ ls -l "$ssh_key_loc" >/dev/null 2>&1 -eq 1 ]]
-  then
+if [[ -x "/usr/bin/ssh-keygen" ]]; then
+  if [[ ls -l "$ssh_key_loc" >/dev/null 2>&1 -eq 1 ]]; then
     echo "Generating New SSH Key - You will be prompted for a password"
     /usr/bin/ssh-keygen -t rsa -N
   else
-  if [[ ls -l "$ssh_key_pub_loc" >/dev/null 2>/dev/null -eq 1 ]]
-  then
     echo "SSH Key found: $(ls $ssh_key_loc)"
-  fi
-fi 
-EOS
+  fi 
 else
  odie <<EOS
 SSH keygen not installed - wut?
 EOS
 fi
 
-if [[ -x "/usr/bin/xcode-select" ]]
-##then 
-##   echo "Installing xcode command line tools - expect a GUI prompt"
+if [[ -x "/usr/bin/xcode-select" ]]; then
+##  echo "Installing xcode command line tools - expect a GUI prompt"
 ##  /usr/bin/xcode-select --install
-then 
   echo "Installing Xcode Command Line Tools - via software update"
   touch "/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
   /usr/sbin/softwareupdate -i "$command_line_tools" -v
@@ -68,30 +61,29 @@ Install xcode + confirm xcode-select is present in /usr/bin/
 EOS
 fi
 
-if [[ -x "/usr/bin/easy_install" ]]
-then 
+if [[ -x "/usr/bin/easy_install" ]];
   echo "Installing Ansible"
-  /usr/bin/easy_install ansible;
+  /usr/bin/easy_install ansible
 else
   odie <<EOS
 easy_install not present - D:
 EOS
 fi
 
-if [[ ping -c 1 raw.githubusercontent.com -eq 0 ]]
-then 
-  if [[ ping -c 1 github.com -eq 0 ]]
-  then
-  echo "Installing Homebrew"
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+if [[ ping -c 1 raw.githubusercontent.com -eq 0 ]]; then
+  if [[ ping -c 1 github.com -eq 0 ]]; then
+    echo "Installing Homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
-  odie <<EOS
+    odie <<EOS
 Unable to ping github.com - required to install brew.
 EOS
+  fi
 else
   odie <<EOS 
 Unable to successfully ping 'raw.githubusercontent.com' to pull down the brew install script
 EOS
+fi
 
 echo "Starting SSH to run Ansible"
 sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
