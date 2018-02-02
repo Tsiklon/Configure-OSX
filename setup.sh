@@ -28,7 +28,6 @@ odie() {
 
 ## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
-ssh_key_pub_loc="/Users/$(LOGNAME)/.ssh/id_rsa.pub"
 command_line_tools=$(softwareupdate -l |
   grep "\*.*Command Line" |
   head -n 1 | awk -F"*" '{print $2}' |
@@ -37,11 +36,11 @@ command_line_tools=$(softwareupdate -l |
 
 
 if [[ -x "/usr/bin/ssh-keygen" ]]; then
-  if [[ ls -l "$ssh_key_loc" >/dev/null 2>&1 -eq 1 ]]; then
+  if [[ -f "$ssh_key_loc" ]]; then
     echo "Generating New SSH Key - You will be prompted for a password"
     /usr/bin/ssh-keygen -t rsa -N
   else
-    echo "SSH Key found: $(ls $ssh_key_loc)"
+    echo "SSH Key found: $(ls "$ssh_key_loc")"
   fi 
 else
  odie <<EOS
@@ -61,7 +60,7 @@ Install xcode + confirm xcode-select is present in /usr/bin/
 EOS
 fi
 
-if [[ -x "/usr/bin/easy_install" ]];
+if [[ -x "/usr/bin/easy_install" ]]; then
   echo "Installing Ansible"
   /usr/bin/easy_install ansible
 else
@@ -70,8 +69,8 @@ easy_install not present - D:
 EOS
 fi
 
-if [[ ping -c 1 raw.githubusercontent.com -eq 0 ]]; then
-  if [[ ping -c 1 github.com -eq 0 ]]; then
+if [[ $(ping -c 1 raw.githubusercontent.com) -eq 0 ]]; then
+  if [[ $(ping -c 1 github.com) -eq 0 ]]; then
     echo "Installing Homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
