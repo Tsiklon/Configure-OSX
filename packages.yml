@@ -1,73 +1,71 @@
-  - hosts: all
-    tasks: 
-      - name: Install Brew packages
-        homebrew: name={{ items }} state=present update_homebrew=yes
-	with_items:
-           - bash
-           - cmake
-           - coreutils
-           - doxygen
-           - elinks
-           - freerdp
-           - gawk
-           - gdbm
-           - gettext
-           - gmp
-           - gnu-getopt
-           - gnu-sed
-           - htop
-           - libevent
-           - libidn2
-           - libunistring
-           - libyaml
-           - links
-           - lynx
-           - md5sha1sum
-           - mpfr
-           - openssl
-           - openssl@1.1
-           - pcre
-           - perl
-           - pkg-config
-           - pv
-           - pwgen
-           - python
-           - python3
-           - ranger
-           - readline
-           - reattach-to-user-namespace
-           - ruby
-           - screenfetch
-           - shellcheck
-           - sl
-           - sqlite
-           - sshpass
-           - tmux
-           - tree
-           - utf8proc
-           - vim
-           - watch
-           - wget
-           - xz
-           - zsh
-           - zsh-completions
-
-      - name: Install Brew Cask packages
-        homebrew_cask: name={{ items }} state=present
-	with_items:
-            - atom
-            - bartender
-            - discord
-            - docker
-            - dropbox
-            - firefox
-            - google-chrome
-            - istat-menus
-            - iterm2
-            - logitech-options
-            - parallels
-            - spotify
-            - virtualbox
-            - vlc
-
-
+- hosts: localhost
+  tasks: 
+    - name: install xquartz
+      homebrew_cask: name=xquartz state=present
+    - name: Install Brew packages
+      homebrew: name='{{ item }}' state=present update_homebrew=yes
+      with_items:
+        - bash
+        - cmake
+        - coreutils
+        - doxygen
+        - elinks
+        - freerdp
+        - gawk
+        - gdbm
+        - gettext
+        - gmp
+        - gnu-getopt
+        - gnu-sed
+        - libevent
+        - libidn2
+        - libunistring
+        - libyaml
+        - links
+        - lynx
+        - md5sha1sum
+        - mpfr
+        - openssl
+        - openssl@1.1
+        - pcre
+        - perl
+        - pkg-config
+        - pv
+        - pwgen
+        - python
+        - python3
+        - ranger
+        - readline
+        - reattach-to-user-namespace
+        - ruby
+        - screenfetch
+        - shellcheck
+        - sl
+        - sqlite
+        - sshpass
+        - tmux
+        - tree
+        - utf8proc
+        - vim
+        - watch
+        - wget
+        - xz
+        - zsh
+        - zsh-completions
+    - name: Install Brew Cask packages
+      homebrew_cask: name='{{ item }}' state=present
+      with_items:
+        - atom
+        - bartender
+        - discord
+        - docker
+        - dropbox
+        - firefox
+        - google-chrome
+        - istat-menus
+        - iterm2
+        - logitech-options
+        - parallels
+        - spotify
+        - virtualbox
+        - vlc
