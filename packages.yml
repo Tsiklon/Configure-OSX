@@ -42,7 +42,6 @@
         - shellcheck
         - sl
         - sqlite
-        - sshpass
         - tmux
         - tree
         - utf8proc
@@ -64,7 +63,6 @@
         - google-chrome
         - istat-menus
         - iterm2
-        - logitech-options
         - parallels
         - spotify
         - virtualbox
