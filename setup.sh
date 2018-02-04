@@ -5,6 +5,7 @@
 ## - 2018 - Damien Nugent 
 ##
 
+### TO DO: ADD CHECKS TO SKIP THE SSH + Commandline tools stuff if already run before
 ## Functions - liberally borrowed from brew.sh
 onoe() {
   if [[ -t 2 ]] # check whether stderr is a tty.
@@ -69,7 +70,7 @@ fi
 if [[ -x "/usr/bin/easy_install" ]]; then
   echo "Installing Ansible"
   sudo /usr/bin/easy_install pip
-  pip install --user ansible
+  sudo pip install ansible
    if [[ $? -eq 1 ]]; then
     odie <<EOS
 Failed to install Ansible
