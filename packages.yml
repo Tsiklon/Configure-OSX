@@ -32,11 +32,10 @@
         - pkg-config
         - pv
         - pwgen
+        - python@2
         - python
-        - python3
         - ranger
         - readline
-        - reattach-to-user-namespace
         - ruby
         - screenfetch
         - shellcheck
@@ -65,5 +64,6 @@
         - iterm2
         - parallels
         - spotify
+        - standard-notes
         - virtualbox
         - vlc
