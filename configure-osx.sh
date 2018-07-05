@@ -7,14 +7,14 @@
 ## - Advice taken from https://github.com/anordal/shellharden/blob/master/how_to_do_things_safely_in_bash.md
 
 # preamble checking bash version.
-if test "$BASH" = "" || "$BASH" -uc 'a=();true "${a[@]}"' 2>/dev/null; then
-    # Bash 4.4, Zsh
-    set -euo pipefail
-else
-    # Bash 4.3 and older chokes on empty arrays with set -u.
-    set -eo pipefail
-fi
-shopt -s nullglob globstar
+#if test "$BASH" = "" || "$BASH" -uc 'a=();true "${a[@]}"' 2>/dev/null; then
+#    # Bash 4.4, Zsh
+#    set -euo pipefail
+#else
+#    # Bash 4.3 and older chokes on empty arrays with set -u.
+#    set -eo pipefail
+#fi
+#shopt -s nullglob globstar
 
 ## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
@@ -155,7 +155,7 @@ case "$1" in
     software
     ;;
   
-  '*')
+  *)
     echo "Usage: $0 all|ssh|xcode|defaults|software 
 
 ssh - Generate new SSH Key 
