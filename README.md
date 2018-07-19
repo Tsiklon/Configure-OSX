@@ -15,3 +15,14 @@
 ## Instructions
  - Install Xcode from the appstore.
  - run the Shell Script.
+
+ if this is a brand new system - pass the 'all' flag to it.
+ - `configure-osx.sh all`
+
+## Options
+ - ssh - Generate new SSH Key
+ - xcode - install xcode
+ - defaults - set custom defaults
+ - software - install software packages using ansible and homebrew
+ - dotfiles - pull basic dotfiles and public keys (TBC) from github
+
