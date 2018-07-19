@@ -2,7 +2,7 @@
 ##
 ## Script to install and configure OS X to my liking.
 ##
-## - 2018 - Damien Nugent 
+## v0.1 - 2018 - Damien Nugent 
 ##
 
 ## Variables
