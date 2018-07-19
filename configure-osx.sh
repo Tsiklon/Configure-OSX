@@ -66,7 +66,7 @@ fi
 
 software(){
 if [[ -x "/usr/bin/easy_install" ]]; then
-  echo "Installing Ansible"
+  echo "Installing Ansible - Please Ensure that the Xcode Command Line tools have been installed first"
   sudo /usr/bin/easy_install pip
   sudo pip install ansible
    if [[ $? -eq 1 ]]; then
