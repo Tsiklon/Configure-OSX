@@ -1,25 +1,35 @@
 - hosts: localhost
   tasks: 
-    - name: Create gitstuff directory
-      file: path='{{ ansible_env.HOME }}/gitstuff' state=directory
+   - name: Set Global Git config 
+     git_config: 
+       name: user.name 
+       value: 'Damien Nugent' 
+       scope: global
+     git_config:
+       name: user.email 
+       value: 'damien@damiennugent.com' 
+       scope: global
+     git_config: 
+       name: core.editor 
+       value: vim 
+       scope: global
 
-#    - name: Set Global Git config 
-#      git-config: 
-#        - name: user.name 
-#        - value: 'Damien Nugent' 
-#        - scope: global
-#      git-config:
-#        - name: user.email 
-#        - value: 'damien@damiennugent.com' 
-#        - scope: global
-#      git-config: 
-#        - name: core.editor 
-#        - value: vim 
-#        - scope: global
+   - name: Create gitstuff directory
+     file: 
+       state: directory
+       path: '{{ ansible_env.HOME }}/gitstuff'
 
-    - name: Pull dotfiles from github
-      git: repo='https://github.com/Tsiklon/dot-files.git' dest='{{ ansible_env.HOME }}/gitstuff/dot-files'
+   - name: Pull dotfiles from github
+     git:
+       repo: 'https://github.com/Tsiklon/dot-files.git' 
+       dest: '{{ ansible_env.HOME }}/gitstuff/dot-files'
 
-    - name: link dot files
-      file: state=link src='{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc' dest='{{ ansible_env.HOME }}/.vimrc'
-      file: state=link src='{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf' dest='{{ ansible_env.HOME }}/.tmux.conf'
+   - name: link dot files
+     file: 
+       state: link 
+       src: '{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc' 
+       dest: '{{ ansible_env.HOME }}/.vimrc'
+     file: 
+       state: link 
+       src: '{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf' 
+       dest: '{{ ansible_env.HOME }}/.tmux.conf'
