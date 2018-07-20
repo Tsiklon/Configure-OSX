@@ -2,19 +2,8 @@
 ##
 ## Script to install and configure OS X to my liking.
 ##
-## - 2018 - Damien Nugent 
+## v0.1 - 2018 - Damien Nugent 
 ##
-## - Advice taken from https://github.com/anordal/shellharden/blob/master/how_to_do_things_safely_in_bash.md
-
-# preamble checking bash version.
-if test "$BASH" = "" || "$BASH" -uc 'a=();true "${a[@]}"' 2>/dev/null; then
-    # Bash 4.4, Zsh
-    set -euo pipefail
-else
-    # Bash 4.3 and older chokes on empty arrays with set -u.
-    set -eo pipefail
-fi
-shopt -s nullglob globstar
 
 ## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
@@ -77,7 +66,7 @@ fi
 
 software(){
 if [[ -x "/usr/bin/easy_install" ]]; then
-  echo "Installing Ansible"
+  echo "Installing Ansible - Please Ensure that the Xcode Command Line tools have been installed first"
   sudo /usr/bin/easy_install pip
   sudo pip install ansible
    if [[ $? -eq 1 ]]; then
@@ -108,6 +97,9 @@ fi
 
 echo "Installing useful packages and casks from brew"
 /usr/local/bin/ansible-playbook -i hosts packages.yml
+}
+
+dotfiles() {
 echo "Pulling Dotfiles from git"
 /usr/local/bin/ansible-playbook -i hosts dotfiles.yml
 }
@@ -136,6 +128,7 @@ case "$1" in
     ssh
     xcode
     software
+    dotfiles
     defaults
     ;;
   
@@ -154,14 +147,19 @@ case "$1" in
   'software')
     software
     ;;
+
+  'dotfiles')
+    dotfiles
+    ;;
   
-  '*')
-    echo "Usage: $0 all|ssh|xcode|defaults|software 
+  *)
+    echo "Usage: $0 all|ssh|xcode|defaults|software|dotfiles
 
 ssh - Generate new SSH Key 
 xcode - install xcode 
 defaults - set custom defaults
-software - install software packages using ansible and homebrew"
+software - install software packages using ansible and homebrew
+dotfiles - pull basic dotfiles and public keys from github"
     exit 1
     ;;
 esac
