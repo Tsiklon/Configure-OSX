@@ -23,9 +23,8 @@
    - name: link dot files
      file: 
        state: link 
-       src: '{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc' 
-       dest: '{{ ansible_env.HOME }}/.vimrc'
-     file: 
-       state: link 
-       src: '{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf' 
-       dest: '{{ ansible_env.HOME }}/.tmux.conf'
+       src: "{{ item.src }}" 
+       dest: "{{ item.dest }}"
+     with_items:
+      - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc', dest: '{{ ansible_env.HOME }}/.vimrc'}
+      - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf', dest: '{{ ansible_env.HOME }}/.tmux.conf'}
