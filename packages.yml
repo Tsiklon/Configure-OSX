@@ -4,24 +4,32 @@
       homebrew_cask: 
         name: xquartz
         state: present
+      tags:
+        - xquartz
     - name: Install Brew packages
       homebrew: 
         name: '{{ item }}'
         state: present 
         update_homebrew: yes
+      tags:
+       - brew-pack
       with_items:
+        - ack
+        - bat
         - bash
         - cmake
         - coreutils
         - doxygen
         - elinks
         - freerdp
+        - fzf
         - gawk
         - gdbm
         - gettext
         - gmp
         - gnu-getopt
         - gnu-sed
+        - htop
         - libevent
         - libidn2
         - libunistring
@@ -46,6 +54,7 @@
         - shellcheck
         - sl
         - sqlite
+        - tldr
         - tmux
         - tree
         - utf8proc
@@ -54,11 +63,12 @@
         - wget
         - xz
         - zsh
-        - zsh-completions
     - name: Install Brew Cask packages
       homebrew_cask:
         name: '{{ item }}' 
         state: present
+      tags:
+        - brew-cask
       with_items:
         - atom
         - bartender
@@ -67,6 +77,7 @@
         - dropbox
         - firefox
         - google-chrome
+        - google-cloud-sdk
         - istat-menus
         - iterm2
         - parallels
