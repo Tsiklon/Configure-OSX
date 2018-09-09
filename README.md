@@ -26,3 +26,13 @@
  - software - install software packages using ansible and homebrew
  - dotfiles - pull basic dotfiles and public keys (TBC) from github
 
+## Playbooks
+Should you wish to run any of the individual tasks in the playbooks - the tasks are tagged to accommodate this.
+### packages.yml
+ - xquartz - install xquartz - (hard dependency for the rest of the brew packages)
+ - brew-pack - install all named homebrew packages
+ - brew-cask - install all named homebrew casks
+   
+### dotfiles.yml
+ - git-config - set global git config
+ - dot-files - clone dotfiles repos, creating directories where appropriate
