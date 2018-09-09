@@ -5,6 +5,8 @@
        name: "{{ item.name }}"
        value: "{{ item.value }}"
        scope: global
+     tags:
+       - git-config 
      with_items:
       - { name: 'user.name', value: 'Damien Nugent' }
       - { name: 'user.email', value: 'damien@damiennugent.com' }
@@ -14,17 +16,23 @@
      file: 
        state: directory
        path: '{{ ansible_env.HOME }}/gitstuff'
+     tags:
+       - dotfiles
 
    - name: Pull dotfiles from github
      git:
        repo: 'https://github.com/Tsiklon/dot-files.git' 
        dest: '{{ ansible_env.HOME }}/gitstuff/dot-files'
+     tags:
+       - dotfiles
 
    - name: link dot files
      file: 
        state: link 
        src: "{{ item.src }}" 
        dest: "{{ item.dest }}"
+     tags:
+       - dotfiles
      with_items:
       - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc', dest: '{{ ansible_env.HOME }}/.vimrc'}
       - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf', dest: '{{ ansible_env.HOME }}/.tmux.conf'}
