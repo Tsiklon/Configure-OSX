@@ -8,7 +8,7 @@
 ## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
 
-## Functions - onoe/odie is liberally borrowed from brew.sh
+## Functions - onoe/odie is liberally borrowed from brew.sh - https://github.com/Homebrew/brew/blob/master/Library/Homebrew/brew.sh
 onoe() {
   if [[ -t 2 ]] # check whether stderr is a tty.
   then
@@ -83,7 +83,15 @@ fi
 if [[ $(ping -c 1 raw.githubusercontent.com > /dev/null 2&>1) -eq 0 ]]; then
   if [[ $(ping -c 1 github.com > /dev/null 2&>1) -eq 0 ]]; then
     echo "Installing Homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    if [[ -d "/usr/local" ]]; then
+      mkdir /usr/local/Homebrew
+      curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C /usr/local/homebrew
+      ln -s /usr/local/Homebrew/bin/brew /usr/local/bin/brew
+    else
+      odie <<EOS
+/usr/local does not exist - are you sure you're on OS X?
+EOS
+   fi
   else
     odie <<EOS
 Unable to ping github.com - required to install brew.
