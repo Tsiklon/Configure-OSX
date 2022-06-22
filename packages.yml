@@ -8,7 +8,7 @@
         - xquartz
     - name: Install Brew packages
       community.general.homebrew: 
-        name: [ 'ack', 'bat', 'bash', 'cmake', 'coreutils', 'doxygen', 'elinks', 'freerdp', 'fzf', 'htop', 'gawk', 'gdbm', 'gettext', 'gmp', 'gnu-getopt', 'gnu-sed', 'htop', 'libevent', 'libidn2', 'libunistring', 'libyaml', 'links', 'lynx', 'md5sha1sum', 'mpfr', 'openssl', 'openssl@1.1', 'pcre', 'perl', 'pkg-config', 'pv', 'pwgen', 'python@2', 'python', 'ranger', 'readline', 'ruby', 'screenfetch', 'shellcheck', 'sl', 'sqlite', 'tldr', 'tmux', 'tree', 'utf8proc', 'vim', 'watch', 'wget', 'xz', 'zsh' ]
+        name: [ 'ack', 'bat', 'bash', 'cmake', 'coreutils', 'doxygen', 'elinks', 'freerdp', 'fzf', 'htop', 'gawk', 'gdbm', 'gettext', 'gmp', 'gnu-getopt', 'gnu-sed', 'htop', 'jq', 'libevent', 'libidn2', 'libunistring', 'libyaml', 'links', 'lynx', 'md5sha1sum', 'mpfr', 'openssl', 'openssl@1.1', 'pcre', 'perl', 'pkg-config', 'pv', 'pwgen', 'python', 'ranger', 'readline', 'ruby', 'screenfetch', 'shellcheck', 'sl', 'sqlite', 'tldr', 'tmux', 'tree', 'utf8proc', 'vim', 'watch', 'wget', 'xz', 'zsh' ]
         state: present 
         update_homebrew: yes
       tags:
