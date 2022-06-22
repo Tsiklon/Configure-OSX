@@ -30,22 +30,23 @@ odie() {
 }
 
 program_exist() {
-  if [[ ! -x $(command -v "${0}" ) ]]; then
-    odie "program ${0} - not exist - grug unhappy"
+  if [[ ! -x $(command -v "${1}" ) ]]; then
+    odie "program ${1} - not exist - grug unhappy"
   fi
 }
 
 remote_host_access() {
-  local nc_exist = $(command -v nc)
-  if [[ ! -z nc_exist ]]; then 
-    if [[ ! $(nc -vz ${0} 443 -w 1 > /dev/null 2&>1 ) -eq 0 ]]; then 
-      odie "unable to connect to ${0} on port 443 - exiting" 
+  nc_exist=$(command -v nc)
+  if [[ -n $nc_exist ]]; then 
+    if [[ ! $(nc -vz "${1}" 443 -w 1 > /dev/null ) -eq 0 ]]; then 
+      odie "unable to connect to ${1} on port 443 - exiting" 
     fi
   else 
-    if [[ ! $(ping -c 1 "${0}" > /dev/null 2&>1 ) -eq 0 ]]; then
-      odie "unable to ping ${0} - exiting"
+    if [[ ! $(ping -c 1 "${1}" > /dev/null ) -eq 0 ]]; then
+      odie "unable to ping ${1} - exiting"
     fi
   fi
+  unset nc_exist
 }
 
 ## Actual Useful Functions
