@@ -31,7 +31,7 @@ odie() {
 
 program_exist() {
   if [[ ! -x $(command -v "${1}" ) ]]; then
-    odie "program ${1} - not exist - grug unhappy"
+    odie "program '${1}' - not exist - grug unhappy"
   fi
 }
 
