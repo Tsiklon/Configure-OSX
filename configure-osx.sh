@@ -76,10 +76,10 @@ xcode() {
 }
 
 inst_ansible() {
-  program_exist "easy_install"
+  program_exist "pip3"
   echo "Installing Ansible - Please Ensure that the Xcode Command Line tools have been installed first"
-  sudo easy_install pip
-  sudo pip install ansible
+  pip3 install --upgrade pip
+  pip3 install ansible
   if [[ $? -eq 1 ]]; then
     odie "Failed to install Ansible"
   fi
@@ -88,9 +88,8 @@ inst_ansible() {
 inst_brew() {
   remote_host_access "raw.githubusercontent.com"
   remote_host_access "github.com"
-  program_exist "ruby"
   echo "Installing Homebrew"
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
 inst_packages() {
@@ -112,20 +111,19 @@ dotfiles() {
 }
 
 defaults(){
-  program_exist "defaults"
   echo "Adjusting NSGlobalDomain Settings"
-  defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
+  /usr/bin/defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
   
   echo "Adjusting Finder settings"
-  defaults write com.apple.finder AppleShowAllFiles -bool true
-  defaults write com.apple.finder ShowStatusBar -bool true
-  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-  defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
-  defaults write com.apple.finder CreateDesktop -bool false
-  defaults write com.apple.finder DisableAllAnimations -bool true
+  /usr/bin/defaults write com.apple.finder AppleShowAllFiles -bool true
+  /usr/bin/defaults write com.apple.finder ShowStatusBar -bool true
+  /usr/bin/defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+  /usr/bin/defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+  /usr/bin/defaults write com.apple.finder CreateDesktop -bool false
+  /usr/bin/defaults write com.apple.finder DisableAllAnimations -bool true
   
   echo "Disabling Mouse Acceleration"
-  defaults write .GlobalPreferences com.apple.mouse.scaling -1
+  /usr/bin/defaults write .GlobalPreferences com.apple.mouse.scaling -1
   
   echo "Restarting Finder"
   killall "Finder" > /dev/null 2>&1
@@ -137,7 +135,7 @@ case "$1" in
     xcode
     inst_software
     dotfiles
-    defaults
+    /usr/bin/defaults
     ;;
   
   'ssh')
@@ -149,7 +147,7 @@ case "$1" in
     ;;
   
   'defaults')
-    defaults
+    /usr/bin/defaults
     ;;
 
   'software')
