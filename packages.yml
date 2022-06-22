@@ -1,87 +1,22 @@
 - hosts: localhost
   tasks: 
     - name: install xquartz
-      homebrew_cask: 
+      community.general.homebrew_cask: 
         name: xquartz
         state: present
       tags:
         - xquartz
     - name: Install Brew packages
-      homebrew: 
-        name: '{{ item }}'
+      community.general.homebrew: 
+        name: [ 'ack', 'bat', 'bash', 'cmake', 'coreutils', 'doxygen', 'elinks', 'freerdp', 'fzf', 'htop', 'gawk', 'gdbm', 'gettext', 'gmp', 'gnu-getopt', 'gnu-sed', 'htop', 'libevent', 'libidn2', 'libunistring', 'libyaml', 'links', 'lynx', 'md5sha1sum', 'mpfr', 'openssl', 'openssl@1.1', 'pcre', 'perl', 'pkg-config', 'pv', 'pwgen', 'python@2', 'python', 'ranger', 'readline', 'ruby', 'screenfetch', 'shellcheck', 'sl', 'sqlite', 'tldr', 'tmux', 'tree', 'utf8proc', 'vim', 'watch', 'wget', 'xz', 'zsh' ]
         state: present 
         update_homebrew: yes
       tags:
        - brew-pack
-      with_items:
-        - ack
-        - bat
-        - bash
-        - cmake
-        - coreutils
-        - doxygen
-        - elinks
-        - freerdp
-        - fzf
-        - gawk
-        - gdbm
-        - gettext
-        - gmp
-        - gnu-getopt
-        - gnu-sed
-        - htop
-        - libevent
-        - libidn2
-        - libunistring
-        - libyaml
-        - links
-        - lynx
-        - md5sha1sum
-        - mpfr
-        - openssl
-        - openssl@1.1
-        - pcre
-        - perl
-        - pkg-config
-        - pv
-        - pwgen
-        - python@2
-        - python
-        - ranger
-        - readline
-        - ruby
-        - screenfetch
-        - shellcheck
-        - sl
-        - sqlite
-        - tldr
-        - tmux
-        - tree
-        - utf8proc
-        - vim
-        - watch
-        - wget
-        - xz
-        - zsh
     - name: Install Brew Cask packages
-      homebrew_cask:
-        name: '{{ item }}' 
+      community.general.homebrew_cask:
+        name: [ 'bartender', 'cheatsheet', 'discord', 'docker', 'dropbox', 'firefox', 'google-chrome', 'google-cloud-sdk', 'istat-menus', 'iterm2', 'parallels', 'spotify', 'standard-notes', 'visual-studio-code', 'vlc' ]
         state: present
       tags:
         - brew-cask
-      with_items:
-        - atom
-        - bartender
-        - cheatsheet
-        - discord
-        - docker
-        - dropbox
-        - firefox
-        - google-chrome
-        - google-cloud-sdk
-        - istat-menus
-        - iterm2
-        - parallels
-        - spotify
-        - standard-notes
-        - vlc
+

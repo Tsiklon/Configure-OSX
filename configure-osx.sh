@@ -8,7 +8,7 @@
 ## Variables
 ssh_key_loc="/Users/$(LOGNAME)/.ssh/id_rsa"
 
-## Functions - onoe/odie is liberally borrowed from brew.sh
+## Boilerplate Useful Functions
 onoe() {
   if [[ -t 2 ]] # check whether stderr is a tty.
   then
@@ -29,26 +29,41 @@ odie() {
   exit 1
 }
 
+program_exist() {
+  if [[ ! -x $(command -v "${0}" ) ]]; then
+    odie "program ${0} - not exist - grug unhappy"
+  fi
+}
+
+remote_host_access() {
+  local nc_exist = $(command -v nc)
+  if [[ ! -z nc_exist ]]; then 
+    if [[ ! $(nc -vz ${0} 443 -w 1 > /dev/null 2&>1 ) -eq 0 ]]; then 
+      odie "unable to connect to ${0} on port 443 - exiting" 
+    fi
+  else 
+    if [[ ! $(ping -c 1 "${0}" > /dev/null 2&>1 ) -eq 0 ]]; then
+      odie "unable to ping ${0} - exiting"
+    fi
+  fi
+}
+
+## Actual Useful Functions
 ssh(){
-if [[ -x "/usr/bin/ssh-keygen" ]]; then
+  program_exist "ssh-keygen"
   if [[ ! -f "$ssh_key_loc" ]]; then
     echo "Generating New SSH Key - You will be prompted for a password"
-    /usr/bin/ssh-keygen -t rsa 
+    ssh-keygen -t rsa 
     ssh-add
   else
     echo "SSH Key found: $(ls "$ssh_key_loc")"
   fi 
-else
- odie <<EOS
-SSH keygen not installed - wut?
-EOS
-fi
 }
 
 xcode() {
-if [[ -x "/usr/bin/xcode-select" ]]; then
+  program_exist "xcode-select"
   echo "Installing xcode command line tools - expect a GUI prompt"
-  /usr/bin/xcode-select --install
+  xcode-select --install
 
 #  echo "Installing Xcode Command Line Tools - via software update"
 #  touch "/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
@@ -57,77 +72,69 @@ if [[ -x "/usr/bin/xcode-select" ]]; then
 #  head -n 1 | awk -F"*" '{print $2}' |
 #  sed -e 's/^ *//' |
 #  tr -d '\n')" --verbose
-else 
-  odie <<EOS
-Install xcode + confirm xcode-select is present in /usr/bin/
-EOS
-fi
 }
 
-software(){
-if [[ -x "/usr/bin/easy_install" ]]; then
+inst_ansible() {
+  program_exist "easy_install"
   echo "Installing Ansible - Please Ensure that the Xcode Command Line tools have been installed first"
-  sudo /usr/bin/easy_install pip
+  sudo easy_install pip
   sudo pip install ansible
-   if [[ $? -eq 1 ]]; then
-    odie <<EOS
-Failed to install Ansible
-EOS
-    fi
-else
-  odie <<EOS
-easy_install not present - D:
-EOS
-fi
-
-if [[ $(ping -c 1 raw.githubusercontent.com > /dev/null 2&>1) -eq 0 ]]; then
-  if [[ $(ping -c 1 github.com > /dev/null 2&>1) -eq 0 ]]; then
-    echo "Installing Homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  else
-    odie <<EOS
-Unable to ping github.com - required to install brew.
-EOS
+  if [[ $? -eq 1 ]]; then
+    odie "Failed to install Ansible"
   fi
-else
-  odie <<EOS 
-Unable to successfully ping 'raw.githubusercontent.com' to pull down the brew install script
-EOS
-fi
+}
 
-echo "Installing useful packages and casks from brew"
-/usr/local/bin/ansible-playbook -i hosts packages.yml
+inst_brew() {
+  remote_host_access "raw.githubusercontent.com"
+  remote_host_access "github.com"
+  program_exist "ruby"
+  echo "Installing Homebrew"
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+}
+
+inst_packages() {
+  program_exist "ansible-playbook"
+  echo "Installing useful packages and casks from brew"
+  ansible-playbook -i hosts packages.yml
+}
+
+
+inst_software(){
+  inst_ansible
+  inst_brew
+  inst_packages
 }
 
 dotfiles() {
-echo "Pulling Dotfiles from git"
-/usr/local/bin/ansible-playbook -i hosts dotfiles.yml
+  echo "Pulling Dotfiles from git"
+  /usr/local/bin/ansible-playbook -i hosts dotfiles.yml
 }
 
 defaults(){
-echo "Adjusting NSGlobalDomain Settings"
-/usr/bin/defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
-
-echo "Adjusting Finder settings"
-/usr/bin/defaults write com.apple.finder AppleShowAllFiles -bool true
-/usr/bin/defaults write com.apple.finder ShowStatusBar -bool true
-/usr/bin/defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-/usr/bin/defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
-/usr/bin/defaults write com.apple.finder CreateDesktop -bool false
-/usr/bin/defaults write com.apple.finder DisableAllAnimations -bool true
-
-echo "Disabling Mouse Acceleration"
-/usr/bin/defaults write .GlobalPreferences com.apple.mouse.scaling -1
-
-echo "Restarting Finder"
-killall "Finder" > /dev/null 2>&1
+  program_exist "defaults"
+  echo "Adjusting NSGlobalDomain Settings"
+  defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
+  
+  echo "Adjusting Finder settings"
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+  defaults write com.apple.finder ShowStatusBar -bool true
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+  defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+  defaults write com.apple.finder CreateDesktop -bool false
+  defaults write com.apple.finder DisableAllAnimations -bool true
+  
+  echo "Disabling Mouse Acceleration"
+  defaults write .GlobalPreferences com.apple.mouse.scaling -1
+  
+  echo "Restarting Finder"
+  killall "Finder" > /dev/null 2>&1
 }
 
 case "$1" in 
   'all')
     ssh
     xcode
-    software
+    inst_software
     dotfiles
     defaults
     ;;
@@ -145,7 +152,7 @@ case "$1" in
     ;;
 
   'software')
-    software
+    inst_software
     ;;
 
   'dotfiles')
