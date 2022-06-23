@@ -135,7 +135,7 @@ case "$1" in
     xcode
     inst_software
     dotfiles
-    /usr/bin/defaults
+    set_defaults
     ;;
   
   'ssh')
