@@ -107,10 +107,10 @@ inst_software(){
 
 dotfiles() {
   echo "Pulling Dotfiles from git"
-  /usr/local/bin/ansible-playbook -i hosts dotfiles.yml
+  ansible-playbook -i hosts dotfiles.yml
 }
 
-defaults(){
+set_defaults(){
   echo "Adjusting NSGlobalDomain Settings"
   /usr/bin/defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1 ### Sidebar Icon size
   
@@ -147,7 +147,7 @@ case "$1" in
     ;;
   
   'defaults')
-    /usr/bin/defaults
+    set_defaults
     ;;
 
   'software')
