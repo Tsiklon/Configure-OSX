@@ -15,14 +15,14 @@
    - name: Create gitstuff directory
      file: 
        state: directory
-       path: '{{ ansible_env.HOME }}/gitstuff'
+       path: '{{ ansible_env.HOME }}/Developer/Code'
      tags:
        - dotfiles
 
    - name: Pull dotfiles from github
      git:
        repo: 'https://github.com/Tsiklon/dot-files.git' 
-       dest: '{{ ansible_env.HOME }}/gitstuff/dot-files'
+       dest: '{{ ansible_env.HOME }}/Developer/Code/dot-files'
      tags:
        - dotfiles
 
@@ -34,5 +34,5 @@
      tags:
        - dotfiles
      with_items:
-      - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/vimrc', dest: '{{ ansible_env.HOME }}/.vimrc'}
-      - { src: '{{ ansible_env.HOME }}/gitstuff/dot-files/tmux.conf', dest: '{{ ansible_env.HOME }}/.tmux.conf'}
+      - { src: '{{ ansible_env.HOME }}/Developer/Code/dot-files/dot-files/vimrc', dest: '{{ ansible_env.HOME }}/.vimrc'}
+      - { src: '{{ ansible_env.HOME }}/Developer/Code/dot-files/dot-files/tmux.conf', dest: '{{ ansible_env.HOME }}/.tmux.conf'}
